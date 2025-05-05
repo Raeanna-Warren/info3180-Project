@@ -15,7 +15,7 @@ def search_profiles():
     birth_year = request.args.get('birth_year')
     sex = request.args.get('sex')
     race = request.args.get('race')
-    
+        
     if name:
         query = query.join(User).filter(User.name.ilike(f'%{name}%'))
     if birth_year:
@@ -26,4 +26,4 @@ def search_profiles():
         query = query.filter(Profile.race == race)
     
     profiles = query.all()
-    return jsonify([profile.to_dict() for profile in profiles]), 200
+    return jsonify([profile.to_dict(current_user_id=current_user_id) for profile in profiles]), 200

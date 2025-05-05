@@ -2,20 +2,28 @@ from flask import Blueprint, request, jsonify
 from app import db, jwt
 from app.models import User, Profile, Favorite
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy.orm import joinedload
 
 bp = Blueprint('profiles', __name__, url_prefix='/api/profiles')
 
 @bp.route('/', methods=['GET'])
+@jwt_required()
 def get_profiles():
-    profiles = Profile.query.order_by(Profile.created_at.desc()).limit(4).all()
-    return jsonify([profile.to_dict() for profile in profiles]), 200
+    print("ok")
+    current_user_id = get_jwt_identity()
+    print("No")
+    user_profiles = Profile.query.filter_by(user_id_fk=current_user_id).first()
+    if not user_profiles:
+        return jsonify({'error': 'You must create a profile first.'}), 400
+    profiles = Profile.query.options(joinedload(Profile.user)).order_by(Profile.created_at.desc()).limit(4).all()
+    return jsonify([profile.to_dict(current_user_id=current_user_id) for profile in profiles]), 200
 
 @bp.route('/', methods=['POST'])
 @jwt_required()
 def create_profile():
     current_user_id = get_jwt_identity()
     data = request.get_json()
-    
+    print(data)
     if Profile.query.filter_by(user_id_fk=current_user_id).count() >= 3:
         return jsonify({'message': 'Maximum of 3 profiles per user reached'}), 400
     

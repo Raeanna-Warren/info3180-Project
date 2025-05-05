@@ -56,9 +56,17 @@ class Profile(db.Model):
     family_oriented = db.Column(db.Boolean, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    def to_dict(self):
+    def to_dict(self, current_user_id=None):
+        is_favorited = False
+        if current_user_id:
+            is_favorited = Favorite.query.filter_by(
+                user_id_fk=current_user_id,
+                fav_user_id_fk=self.user_id_fk
+            ).first() is not None
+
         return {
             'id': self.id,
+            'user': self.user.to_dict(),
             'user_id': self.user_id_fk,
             'description': self.description,
             'parish': self.parish,
@@ -73,8 +81,10 @@ class Profile(db.Model):
             'political': self.political,
             'religious': self.religious,
             'family_oriented': self.family_oriented,
-            'created_at': self.created_at.isoformat() if self.created_at else None
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'is_favorited': is_favorited
         }
+
     
     def __repr__(self):
         return f'<Profile {self.id} for User {self.user_id_fk}>'

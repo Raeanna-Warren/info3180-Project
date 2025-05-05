@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import api from '@/services/ApiService'
 
-const API_URL = '0.0.0.0:5000/api'
+const API_URL = 'http://localhost:5000/api'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -31,6 +32,7 @@ export const useAuthStore = defineStore('auth', {
         
         // Set default authorization header for all future requests
         axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`
+        api.setAuthToken(access_token)
         
         return response.data
       } catch (error) {

@@ -2,6 +2,8 @@
 import NavBar from '@/components/NavBar.vue'
 import { ref } from 'vue'
 import api from '@/services/ApiService'
+import axios from 'axios'
+
 
 const description = ref('')
 const parish = ref('')
@@ -34,8 +36,8 @@ async function handleSubmit() {
     family_oriented: family_oriented.value === 'true'
   }
 
-    try {
-        const response = await api.post("/profiles", profileData)
+  try {
+    const response = await api.post("/profiles/", profileData)
     console.log(response)
     }
     catch (err) {
@@ -43,7 +45,6 @@ async function handleSubmit() {
   }
 
   console.log('Submitting profile:', profileData)
-  // TODO: send data to backend
 }
 </script>
 
@@ -124,30 +125,9 @@ async function handleSubmit() {
   max-width: 600px;
 }
 
-/* .form-group {
-  display: flex;
-  flex-direction: column;
-} */
-
-/* .form-group label {
-  font-weight: bold;
-  margin-bottom: 0.25rem;
-} */
-
-/* .form-group input,
-.form-group textarea, */
 .form-group select {
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
-
-/* .btn-primary {
-  padding: 0.75rem 1.5rem;
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-} */
 </style>
