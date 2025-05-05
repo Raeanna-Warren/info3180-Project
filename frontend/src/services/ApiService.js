@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 class ApiService {
-  constructor(baseURL = 'http://localhost:5000/api') {
+  constructor(baseURL = '0.0.0.0:5000/api') {
     this.client = axios.create({
       baseURL,
       headers: {
